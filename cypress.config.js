@@ -7,6 +7,7 @@ module.exports = defineConfig({
     },
     env: {
       baseUrl: "https://qauto2.forstudy.space/",
+      apiUrl: "https://qauto2.forstudy.space/api",
     },
   },
 });
