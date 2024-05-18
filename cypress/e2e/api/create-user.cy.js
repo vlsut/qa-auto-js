@@ -1,8 +1,10 @@
-import { cyReqPromise, generateRandomUser } from "../../support/utils";
+import { generateRandomUser } from "../../support/utils";
+import dayjs from "dayjs";
 
 describe("Create User", () => {
   let randomUser;
   let cookie;
+  let carId;
 
   before(() => {
     randomUser = generateRandomUser();
@@ -70,6 +72,8 @@ describe("Create User", () => {
           const body = response.body;
 
           expect(response.status).to.eql(201);
+          expect(body.data.id).to.a("number");
+          carId = body.data.id;
         });
       });
     });
@@ -88,6 +92,38 @@ describe("Create User", () => {
 
       expect(response.status).to.eql(200);
       expect(body.data.length).to.eql(1);
+    });
+  });
+
+  it("should return added car", () => {
+    cy.request({
+      method: "GET",
+      url: Cypress.env().apiUrl + `/cars/${carId}`,
+      headers: {
+        cookie,
+      },
+    }).then((response) => {
+      cy.log(JSON.stringify(response));
+      const body = response.body;
+
+      expect(response.status).to.eql(200);
+    });
+  });
+
+  it("should create expense", () => {
+    cy.createExpense({
+      cookie,
+      body: {
+        carId,
+        reportedAt: dayjs().format("YYYY-MM-DD"),
+        mileage: 101,
+        liters: 11,
+        totalCost: 11,
+        forceMileage: false,
+      },
+    }).then((body) => {
+      expect(body.data.id).to.a("number");
+      expect(body.data.carId).to.equal(carId);
     });
   });
 });
