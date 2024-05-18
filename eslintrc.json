@@ -1,0 +1,4 @@
+{
+    "plugins": ["cypress", "prettier"],
+    "extends": ["plugin:cypress/recommended", "plugin:prettier/recommended"]
+}
